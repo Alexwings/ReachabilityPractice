@@ -12,6 +12,8 @@
 		7DE982AB2047526800090292 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7DE982A92047526800090292 /* Main.storyboard */; };
 		7DE982AD2047526800090292 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7DE982AC2047526800090292 /* Assets.xcassets */; };
 		7DE982B02047526800090292 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7DE982AE2047526800090292 /* LaunchScreen.storyboard */; };
+		7DE982B82047529900090292 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE982B72047529900090292 /* Reachability.swift */; };
+		7DE982BB2048B36100090292 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE982BA2048B36100090292 /* Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +24,8 @@
 		7DE982AC2047526800090292 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7DE982AF2047526800090292 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7DE982B12047526800090292 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7DE982B72047529900090292 /* Reachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
+		7DE982BA2048B36100090292 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +64,8 @@
 				7DE982AC2047526800090292 /* Assets.xcassets */,
 				7DE982AE2047526800090292 /* LaunchScreen.storyboard */,
 				7DE982B12047526800090292 /* Info.plist */,
+				7DE982B72047529900090292 /* Reachability.swift */,
+				7DE982BA2048B36100090292 /* Extensions.swift */,
 			);
 			path = NetworkReachability;
 			sourceTree = "<group>";
@@ -138,6 +144,8 @@
 			files = (
 				7DE982A82047526800090292 /* ViewController.swift in Sources */,
 				7DE982A62047526800090292 /* AppDelegate.swift in Sources */,
+				7DE982B82047529900090292 /* Reachability.swift in Sources */,
+				7DE982BB2048B36100090292 /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

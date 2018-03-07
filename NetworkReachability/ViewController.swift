@@ -10,16 +10,29 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    let label = UILabel()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        view.addSubview(label)
+        label.centerLayout(centerX: view.centerXAnchor, centerY: view.centerYAnchor)
+        let constants: [UIView.LayoutPosition : CGFloat] = [.height : 50, .width : 300]
+        label.autoLayout(constants: constants)
+        label.text = "Started"
+        Reachability.shared.customGloabalCallBack = { [weak self] (status : NetworkStatus) in
+            self?.label.text = status.value()
+        }
+        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.networkChanged(_:)), name: Notification.Name(rawValue: Reachability.networkChangeNotification), object: nil)
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    @objc func networkChanged(_ notification: Notification) {
+        let info = notification.userInfo
+        if let status = info?[Reachability.networkStatusUserInfoKey] as? NetworkStatus {
+            DispatchQueue.main.async { [weak self] in
+                self?.label.text = status.value()
+            }
+        }
     }
-
-
+    
 }
 
