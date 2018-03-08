@@ -45,27 +45,27 @@ enum NetworkStatus: Int {
 
 class Reachability: NSObject {
     var networkStatus: NetworkStatus = .unknown
-    var customGloabalCallBack: NetworkStatusChangedCallback?
+    var customGlobalCallBack: NetworkStatusChangedCallback?
     
     typealias NetworkStatusChangedCallback = (NetworkStatus) -> Void
+    static let networkIdentifier = "alex.learning.Reachability.identifier"
     static let networkChangeNotification = "alex.learning.Reachability.networkChangeNotification"
     static let networkStatusUserInfoKey = "alex.learning.Reachability.networkStatus"
-    
+    private let queue = DispatchQueue(label: Reachability.networkIdentifier, qos: .utility, attributes: .concurrent, autoreleaseFrequency: .workItem)
     private static let reachabilityCallback: SCNetworkReachabilityCallBack = { (reach : SCNetworkReachability, flags: SCNetworkReachabilityFlags, info: UnsafeMutableRawPointer?) -> Void in
         let newStatus = NetworkStatus(flag: flags)
-        if let userCallback = info?.load(as: Reachability.NetworkStatusChangedCallback.self) {
-            userCallback(newStatus)
+        if let info = info {
+            let reach = Unmanaged<Reachability>.fromOpaque(info).takeUnretainedValue()
+            reach.customGlobalCallBack?(newStatus)
         }
-        DispatchQueue.global(qos: .background).async {
-            NotificationCenter.default.post(name: Notification.Name(Reachability.networkChangeNotification), object: nil, userInfo: [Reachability.networkStatusUserInfoKey : newStatus])
-        }
+        NotificationCenter.default.post(name: Notification.Name(Reachability.networkChangeNotification), object: nil, userInfo: [Reachability.networkStatusUserInfoKey : newStatus])
     }
+    
     static let shared: Reachability = {
         var addr = sockaddr_in()
         addr.sin_len = UInt8(MemoryLayout<sockaddr_in6>.size)
         addr.sin_family = sa_family_t(AF_INET)
         return Reachability(addr: addr)
-        
     }()
     
     private var reachability: SCNetworkReachability?
@@ -95,15 +95,10 @@ extension Reachability {
     func startMonitor() {
         stopMonitor()
         guard let reach = self.reachability else { return }
-        var callBack: NetworkStatusChangedCallback = { [weak self](status: NetworkStatus) in
-            DispatchQueue.main.async {
-                self?.networkStatus = status
-                self?.customGloabalCallBack?(status)
-            }
-        }
         var context = SCNetworkReachabilityContext(version: 0, info: nil, retain: nil, release: nil, copyDescription: nil)
-        context.info = 
+        context.info = Unmanaged<Reachability>.passUnretained(self).toOpaque()
         SCNetworkReachabilitySetCallback(reach, Reachability.reachabilityCallback, &context)
+        SCNetworkReachabilitySetDispatchQueue(reach, self.queue)
         SCNetworkReachabilityScheduleWithRunLoop(reach, CFRunLoopGetMain(), CFRunLoopMode.commonModes.rawValue)
     }
     

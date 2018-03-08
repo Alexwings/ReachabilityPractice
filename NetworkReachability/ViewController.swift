@@ -19,9 +19,11 @@ class ViewController: UIViewController {
         let constants: [UIView.LayoutPosition : CGFloat] = [.height : 50, .width : 300]
         label.autoLayout(constants: constants)
         label.text = "Started"
-        Reachability.shared.customGloabalCallBack = { [weak self] (status : NetworkStatus) in
-            self?.label.text = status.value()
-        }
+//        Reachability.shared.customGlobalCallBack = { [weak self] (status : NetworkStatus) in
+//            DispatchQueue.main.async {
+//                self?.label.text = status.value()
+//            }
+//        }
         NotificationCenter.default.addObserver(self, selector: #selector(ViewController.networkChanged(_:)), name: Notification.Name(rawValue: Reachability.networkChangeNotification), object: nil)
     }
     
