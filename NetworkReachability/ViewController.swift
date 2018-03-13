@@ -15,9 +15,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(label)
-        label.centerLayout(centerX: view.centerXAnchor, centerY: view.centerYAnchor)
-        let constants: [UIView.LayoutPosition : CGFloat] = [.height : 50, .width : 300]
-        label.autoLayout(constants: constants)
+        let constants: [NSLayoutConstraint.LayoutPosition : CGFloat] = [.height : 50, .width : 300]
         label.text = "Started"
 //        Reachability.shared.customGlobalCallBack = { [weak self] (status : NetworkStatus) in
 //            DispatchQueue.main.async {
