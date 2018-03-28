@@ -38,16 +38,15 @@ enum NetworkStatus: Int {
     }
 }
 
-/*
- process:
- 
- */
-
 class Reachability: NSObject {
-    var networkStatus: NetworkStatus = .unknown
-    var customGlobalCallBack: NetworkStatusChangedCallback?
-    
-    typealias NetworkStatusChangedCallback = (NetworkStatus) -> Void
+    var networkStatus: NetworkStatus {
+        get {
+            guard let reach = reachability else { return .unknown }
+            var flags = SCNetworkReachabilityFlags()
+            guard SCNetworkReachabilityGetFlags(reach, &flags) else { return .unknown }
+            return NetworkStatus(flag: flags)
+        }
+    }
     static let networkIdentifier = "alex.learning.Reachability.identifier"
     static let networkChangeNotification = "alex.learning.Reachability.networkChangeNotification"
     static let networkStatusUserInfoKey = "alex.learning.Reachability.networkStatus"
@@ -56,9 +55,11 @@ class Reachability: NSObject {
         let newStatus = NetworkStatus(flag: flags)
         if let info = info {
             let reach = Unmanaged<Reachability>.fromOpaque(info).takeUnretainedValue()
-            reach.customGlobalCallBack?(newStatus)
+            
         }
-        NotificationCenter.default.post(name: Notification.Name(Reachability.networkChangeNotification), object: nil, userInfo: [Reachability.networkStatusUserInfoKey : newStatus])
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: Notification.Name(Reachability.networkChangeNotification), object: nil, userInfo: [Reachability.networkStatusUserInfoKey : newStatus])
+        }
     }
     
     static let shared: Reachability = {

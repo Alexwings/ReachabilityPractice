@@ -29,12 +29,12 @@ class ViewController: UIViewController {
         _ = previousLable.dimensionLayout(constant: 50, position: .height)
         previousLable.text = "previous"
         previousLable.backgroundColor = .yellow
-//        Reachability.shared.customGlobalCallBack = { [weak self] (status : NetworkStatus) in
-//            DispatchQueue.main.async {
-//                self?.label.text = status.value()
-//            }
-//        }
         NotificationCenter.default.addObserver(self, selector: #selector(ViewController.networkChanged(_:)), name: Notification.Name(rawValue: Reachability.networkChangeNotification), object: nil)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        label.text = Reachability.shared.networkStatus.value()
     }
     
     @objc func networkChanged(_ notification: Notification) {
