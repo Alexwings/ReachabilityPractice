@@ -11,11 +11,11 @@ import UIKit
 
 extension UIView {
     
-    typealias VerticalAnchorPair = (anchor: NSLayoutYAxisAnchor?, constant: CGFloat)
+    public typealias VerticalAnchorPair = (anchor: NSLayoutYAxisAnchor?, constant: CGFloat)
     
-    typealias HorizontalAnchorPair = (anchor: NSLayoutXAxisAnchor?, constant: CGFloat)
+    public typealias HorizontalAnchorPair = (anchor: NSLayoutXAxisAnchor?, constant: CGFloat)
     
-    func attachEdgeTo(top: VerticalAnchorPair = (nil, 0), bottom: VerticalAnchorPair = (nil, 0), leading: HorizontalAnchorPair = (nil, 0), trailing: HorizontalAnchorPair = (nil, 0), left: HorizontalAnchorPair = (nil, 0), right: HorizontalAnchorPair = (nil, 0)) {
+    public func attachEdgeTo(top: VerticalAnchorPair = (nil, 0), bottom: VerticalAnchorPair = (nil, 0), leading: HorizontalAnchorPair = (nil, 0), trailing: HorizontalAnchorPair = (nil, 0), left: HorizontalAnchorPair = (nil, 0), right: HorizontalAnchorPair = (nil, 0)) {
         let isLeftToRight = UIApplication.shared.userInterfaceLayoutDirection == .leftToRight
         if let topAnchor = top.anchor {
             _ = verticalLayout(to: topAnchor, constant:top.constant,position: .top)
@@ -40,7 +40,7 @@ extension UIView {
         }
     }
     
-    func layout(toCenterX centerX: HorizontalAnchorPair = (nil, 0), centerY: VerticalAnchorPair = (nil, 0)) {
+    public func layout(toCenterX centerX: HorizontalAnchorPair = (nil, 0), centerY: VerticalAnchorPair = (nil, 0)) {
         if let x = centerX.anchor {
             _ = horizontalLayout(to: x, constant: centerX.constant, position: .centerX)
         }
@@ -49,7 +49,7 @@ extension UIView {
         }
     }
     
-    func verticalLayout(to anchor: NSLayoutYAxisAnchor, constant: CGFloat = 0, position: NSLayoutConstraint.LayoutPosition) -> NSLayoutConstraint? {
+    internal func verticalLayout(to anchor: NSLayoutYAxisAnchor, constant: CGFloat = 0, position: NSLayoutConstraint.LayoutPosition) -> NSLayoutConstraint? {
         translatesAutoresizingMaskIntoConstraints = false
         var selfAnchor: NSLayoutYAxisAnchor? = nil
         switch position {
@@ -71,7 +71,7 @@ extension UIView {
         return const
     }
     
-    func horizontalLayout(to anchor: NSLayoutXAxisAnchor, constant: CGFloat = 0, position:NSLayoutConstraint.LayoutPosition) -> NSLayoutConstraint? {
+    internal func horizontalLayout(to anchor: NSLayoutXAxisAnchor, constant: CGFloat = 0, position:NSLayoutConstraint.LayoutPosition) -> NSLayoutConstraint? {
         translatesAutoresizingMaskIntoConstraints = false
         var selfAnchor: NSLayoutXAxisAnchor? = nil
         switch position {
@@ -99,7 +99,7 @@ extension UIView {
         return const
     }
     
-    func dimensionLayout(to anchor: NSLayoutDimension? = nil, constant: CGFloat, position: NSLayoutConstraint.LayoutPosition) -> NSLayoutConstraint? {
+    public func dimensionLayout(to anchor: NSLayoutDimension? = nil, constant: CGFloat, position: NSLayoutConstraint.LayoutPosition) -> NSLayoutConstraint? {
         translatesAutoresizingMaskIntoConstraints = false
         var selfAnchor: NSLayoutDimension? = nil
         var cons: NSLayoutConstraint? = nil
@@ -123,7 +123,7 @@ extension UIView {
         return cons
     }
     
-    func constraint(for type: NSLayoutConstraint.LayoutPosition) -> NSLayoutConstraint? {
+    public func constraint(for type: NSLayoutConstraint.LayoutPosition) -> NSLayoutConstraint? {
         guard let index = constraints.index(where: {$0.type == .some(type)}) else { return nil }
         return constraints[index]
     }
@@ -131,11 +131,11 @@ extension UIView {
 
 extension NSLayoutConstraint {
     
-    enum LayoutPosition: String {
+    public enum LayoutPosition: String {
         case top = "Top", bottom = "Bottom", leading = "Leading", trailing = "Trailing", left = "Left", right = "Right", height = "Height", width = "Width", centerX = "CenterX", centerY = "CenterY"
     }
     
-    var type: LayoutPosition? {
+    public var type: LayoutPosition? {
         get {
             guard let id = self.identifier else { return nil }
             return LayoutPosition(rawValue: id)
