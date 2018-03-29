@@ -8,6 +8,7 @@
 
 import Foundation
 import SystemConfiguration
+import CoreTelephony
 
 enum NetworkStatus: Int {
     case unknown, wwan, wifi, notReachable
@@ -39,28 +40,28 @@ enum NetworkStatus: Int {
 }
 
 class Reachability: NSObject {
+    
+    //MARK: Private getters
+    private var currentSCNetworkFlags: SCNetworkReachabilityFlags? {
+        get {
+            guard let reach = reachability else { return nil }
+            var flags = SCNetworkReachabilityFlags()
+            guard SCNetworkReachabilityGetFlags(reach, &flags) else { return nil }
+            return flags
+        }
+    }
+    //MARK: Public getters
     var networkStatus: NetworkStatus {
         get {
-            guard let reach = reachability else { return .unknown }
-            var flags = SCNetworkReachabilityFlags()
-            guard SCNetworkReachabilityGetFlags(reach, &flags) else { return .unknown }
+            guard let flags = currentSCNetworkFlags else { return .unknown }
             return NetworkStatus(flag: flags)
         }
     }
+    
+    //MARK: Class instances
     static let networkIdentifier = "alex.learning.Reachability.identifier"
     static let networkChangeNotification = "alex.learning.Reachability.networkChangeNotification"
     static let networkStatusUserInfoKey = "alex.learning.Reachability.networkStatus"
-    private let queue = DispatchQueue(label: Reachability.networkIdentifier, qos: .utility, attributes: .concurrent, autoreleaseFrequency: .workItem)
-    private static let reachabilityCallback: SCNetworkReachabilityCallBack = { (reach : SCNetworkReachability, flags: SCNetworkReachabilityFlags, info: UnsafeMutableRawPointer?) -> Void in
-        let newStatus = NetworkStatus(flag: flags)
-        if let info = info {
-            let reach = Unmanaged<Reachability>.fromOpaque(info).takeUnretainedValue()
-            
-        }
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name: Notification.Name(Reachability.networkChangeNotification), object: nil, userInfo: [Reachability.networkStatusUserInfoKey : newStatus])
-        }
-    }
     
     static let shared: Reachability = {
         var addr = sockaddr_in()
@@ -69,16 +70,32 @@ class Reachability: NSObject {
         return Reachability(addr: addr)
     }()
     
+    //MARK: Private instances
+    private let queue = DispatchQueue(label: Reachability.networkIdentifier, qos: .utility, attributes: .concurrent, autoreleaseFrequency: .workItem)
+    
+    private static let reachabilityCallback: SCNetworkReachabilityCallBack = { (reach : SCNetworkReachability, flags: SCNetworkReachabilityFlags, info: UnsafeMutableRawPointer?) -> Void in
+        let newStatus = NetworkStatus(flag: flags)
+        if let info = info {
+            let reach = Unmanaged<Reachability>.fromOpaque(info).takeUnretainedValue()
+        }
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: Notification.Name(Reachability.networkChangeNotification), object: nil, userInfo: [Reachability.networkStatusUserInfoKey : newStatus])
+        }
+    }
+    
     private var reachability: SCNetworkReachability?
+    
     init(reachability reach: SCNetworkReachability?) {
         reachability = reach
         super.init()
+        
     }
     
     convenience init(domain: String) {
         let reachability: SCNetworkReachability? = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, domain)
         self.init(reachability: reachability)
     }
+    
     convenience init(addr: sockaddr_in) {
         var address = addr
         let reachability = withUnsafePointer(to: &address, {
@@ -106,5 +123,15 @@ extension Reachability {
     func stopMonitor() {
         guard let reach = self.reachability else { return }
         SCNetworkReachabilityUnscheduleFromRunLoop(reach, CFRunLoopGetMain(), CFRunLoopMode.commonModes.rawValue)
+    }
+}
+//MARK: SIM card Related
+extension Reachability {
+    var isSIMAvailable: Bool {
+        get {
+            let celluarNetwork = CTTelephonyNetworkInfo()
+            guard let carrier = celluarNetwork.subscriberCellularProvider else { return false }
+            return carrier.mobileNetworkCode != nil
+        }
     }
 }

@@ -11,7 +11,7 @@ import UIKit
 class ViewController: UIViewController {
 
     let label = UILabel()
-    let previousLable = UILabel()
+    let cellularLable = UIButton()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,28 +23,34 @@ class ViewController: UIViewController {
         label.text = "Started"
         label.backgroundColor = .blue
         
-        view.addSubview(previousLable)
-        previousLable.textAlignment = .center
-        previousLable.attachEdgeTo(top: (label.bottomAnchor, 20), leading: (label.leadingAnchor, 0), trailing: (label.trailingAnchor, 0))
-        _ = previousLable.dimensionLayout(constant: 50, position: .height)
-        previousLable.text = "previous"
-        previousLable.backgroundColor = .yellow
+        view.addSubview(cellularLable)
+        cellularLable.attachEdgeTo(top: (label.bottomAnchor, 20), leading: (label.leadingAnchor, 0), trailing: (label.trailingAnchor, 0))
+        _ = cellularLable.dimensionLayout(constant: 50, position: .height)
+        cellularLable.titleLabel?.text = "\(Reachability.shared.isSIMAvailable)"
+        cellularLable.backgroundColor = .yellow
+        
+        cellularLable.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
+        
         NotificationCenter.default.addObserver(self, selector: #selector(ViewController.networkChanged(_:)), name: Notification.Name(rawValue: Reachability.networkChangeNotification), object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         label.text = Reachability.shared.networkStatus.value()
+        cellularLable.setTitle("\(Reachability.shared.isSIMAvailable)", for: .normal)
     }
     
     @objc func networkChanged(_ notification: Notification) {
         let info = notification.userInfo
         if let status = info?[Reachability.networkStatusUserInfoKey] as? NetworkStatus {
             DispatchQueue.main.async { [weak self] in
-                self?.previousLable.text = self?.label.text
                 self?.label.text = status.value()
             }
         }
+    }
+    
+    @objc func buttonTapped(_ sender: UIButton) {
+        cellularLable.setTitle("\(Reachability.shared.isSIMAvailable)", for: .normal)
     }
     
 }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7DBDECBB206D6A3A00C6B770 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DBDECBA206D6A3A00C6B770 /* CoreTelephony.framework */; };
 		7DE982A62047526800090292 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE982A52047526800090292 /* AppDelegate.swift */; };
 		7DE982A82047526800090292 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE982A72047526800090292 /* ViewController.swift */; };
 		7DE982AB2047526800090292 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7DE982A92047526800090292 /* Main.storyboard */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7DBDECBA206D6A3A00C6B770 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		7DE982A22047526800090292 /* NetworkReachability.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NetworkReachability.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7DE982A52047526800090292 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7DE982A72047526800090292 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -33,17 +35,27 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7DBDECBB206D6A3A00C6B770 /* CoreTelephony.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7DBDECB9206D6A3900C6B770 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7DBDECBA206D6A3A00C6B770 /* CoreTelephony.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		7DE982992047526800090292 = {
 			isa = PBXGroup;
 			children = (
 				7DE982A42047526800090292 /* NetworkReachability */,
 				7DE982A32047526800090292 /* Products */,
+				7DBDECB9206D6A3900C6B770 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
